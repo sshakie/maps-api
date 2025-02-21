@@ -94,6 +94,7 @@ class MainWindow(QMainWindow):
             self.label.setStyleSheet('color:white')
             self.label_2.setStyleSheet('color:white')
             self.label_3.setStyleSheet('color:white')
+            self.clear_button.setStyleSheet('color:white')
         else:
             self.current_theme = 'light'
             self.theme_button.setText('Light')
@@ -104,6 +105,7 @@ class MainWindow(QMainWindow):
             self.label.setStyleSheet('color:black')
             self.label_2.setStyleSheet('color:black')
             self.label_3.setStyleSheet('color:black')
+            self.clear_button.setStyleSheet('color:black')
         self.refresh_map()
 
     def search_object(self):
