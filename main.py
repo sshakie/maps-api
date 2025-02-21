@@ -1,10 +1,10 @@
-import sys, os, requests
+import sys, os, random
 from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QApplication, QLabel, QMainWindow
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+from PyQt6.QtWidgets import QApplication, QMainWindow
+
+from geocoder import *
 
 
 class MainWindow(QMainWindow):
@@ -15,24 +15,26 @@ class MainWindow(QMainWindow):
         self.press_delta = 0.1
         self.size_map = '450,450'
         self.key = '03ed6b30-9245-4897-8428-d44545081a7c'
-        self.key = '92bf06ed-e9bb-4a7b-8b91-23cf32fb910d'
 
         self.map_zoom = 5
         self.map_ll = [37.617531, 55.756086]
-        self.map_l = 'map'
-        self.map_key = ''
         self.current_theme = 'light'
+        self.points_on_map = []
         self.refresh_map()
 
         self.theme_button.clicked.connect(self.change_theme)
         self.theme_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.search_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.search_button.clicked.connect(self.search_object)
+        self.searchEdit.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
 
     def wheelEvent(self, event):
         if event.angleDelta().y() > 0 and self.map_zoom < 17:
             self.map_zoom += 1
-        elif event.angleDelta().y() < 0 and self.map_zoom > 0:
+        elif event.angleDelta().y() < 0 and self.map_zoom > 1:
             self.map_zoom -= 1
         self.refresh_map()
+        super().wheelEvent(event)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Left:
@@ -43,17 +45,32 @@ class MainWindow(QMainWindow):
             self.map_ll[1] += self.press_delta
         if event.key() == Qt.Key.Key_Down:
             self.map_ll[1] -= self.press_delta
+        if event.key() == Qt.Key.Key_Return:
+            self.search_object()
+        if event.key() == Qt.Key.Key_Tab:
+            self.searchEdit.setFocus()
         self.refresh_map()
+        super().keyPressEvent(event)
+
+    def mousePressEvent(self, event):
+        if not self.searchEdit.geometry().contains(event.pos()):
+            self.searchEdit.clearFocus()
+        super().mousePressEvent(event)
 
     def closeEvent(self, event):
         os.remove('tmp.png')
         event.accept()
 
+    def focusOutEvent(self, event):
+        self.deselect()
+        super().focusOutEvent(event)
+
     def refresh_map(self):
         map_params = {'apikey': self.key, 'size': self.size_map, 'll': ','.join(map(str, self.map_ll)),
-                      'maptype': self.map_l, 'z': self.map_zoom, 'theme': self.current_theme}
+                      'z': self.map_zoom, 'theme': self.current_theme}
+        if self.points_on_map:
+            map_params['pt'] = '~'.join(self.points_on_map)
         response = requests.get('https://static-maps.yandex.ru/v1', params=map_params)
-        # print(response.url)
         with open('tmp.png', mode='wb') as tmp:
             tmp.write(response.content)
 
@@ -67,12 +84,31 @@ class MainWindow(QMainWindow):
             self.theme_button.setText('Dark')
             self.setStyleSheet("background-color: rgb(75, 75, 75)")
             self.theme_button.setStyleSheet('color:white')
+            self.search_button.setStyleSheet('color:white')
+            self.searchEdit.setStyleSheet('color:white')
+            self.label.setStyleSheet('color:white')
+            self.label_2.setStyleSheet('color:white')
+            self.label_3.setStyleSheet('color:white')
         else:
             self.current_theme = 'light'
             self.theme_button.setText('Light')
             self.setStyleSheet("background-color: rgb(255, 255, 255)")
             self.theme_button.setStyleSheet('color:black')
+            self.search_button.setStyleSheet('color:black')
+            self.searchEdit.setStyleSheet('color:black')
+            self.label.setStyleSheet('color:black')
+            self.label_2.setStyleSheet('color:black')
+            self.label_3.setStyleSheet('color:black')
         self.refresh_map()
+
+    def search_object(self):
+        object_name = self.searchEdit.text()
+        if object_name:
+            self.map_ll = list(map(float, get_object_info(object_name)[0].split(',')))
+            self.map_zoom = 17
+            colors = ['wt', 'do', 'db', 'bl', 'gn', 'dg', 'gr', 'lb', 'nt', 'or', 'pn', 'rd', 'vv', 'yw']
+            self.points_on_map.append(f'{self.map_ll[0]},{self.map_ll[1]},pm{random.choice(colors)}s')
+            self.refresh_map()
 
 
 def exception_hook(cls, exception, traceback):
