@@ -1,4 +1,4 @@
-import sys, requests
+import sys, os, requests
 from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
@@ -25,8 +25,12 @@ class MainWindow(QMainWindow):
             self.map_zoom -= 1
         self.refresh_map()
 
+    def closeEvent(self, event):
+        os.remove('tmp.png')
+        event.accept()
+
     def refresh_map(self):
-        map_params = {'ll': ','.join(map(str, self.map_ll)), 'l': self.map_l, 'z': self.map_zoom}
+        map_params = {'size': '450,450', 'll': ','.join(map(str, self.map_ll)), 'l': self.map_l, 'z': self.map_zoom}
         response = requests.get('https://static-maps.yandex.ru/1.x/', params=map_params)
         with open('tmp.png', mode='wb') as tmp:
             tmp.write(response.content)
@@ -46,4 +50,3 @@ if __name__ == '__main__':
     main_window.show()
     sys.__excepthook__ = exception_hook
     sys.exit(app.exec())
-
