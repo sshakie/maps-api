@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
         self.map_ll = [37.617531, 55.756086]
         self.current_theme = 'light'
         self.points_on_map = []
+        self.index_points = dict()
         self.refresh_map()
 
         self.theme_button.clicked.connect(self.change_theme)
@@ -27,6 +28,8 @@ class MainWindow(QMainWindow):
         self.search_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.search_button.clicked.connect(self.search_object)
         self.searchEdit.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
+        self.clear_button.clicked.connect(self.clear_point)
+        self.clear_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
     def wheelEvent(self, event):
         if event.angleDelta().y() > 0 and self.map_zoom < 17:
@@ -49,6 +52,8 @@ class MainWindow(QMainWindow):
             self.search_object()
         if event.key() == Qt.Key.Key_Tab:
             self.searchEdit.setFocus()
+        if event.key() == Qt.Key.Key_Escape:
+            self.searchEdit.clearFocus()
         self.refresh_map()
         super().keyPressEvent(event)
 
@@ -106,8 +111,19 @@ class MainWindow(QMainWindow):
         if object_name:
             self.map_ll = list(map(float, get_object_info(object_name)[0].split(',')))
             self.map_zoom = 17
-            colors = ['wt', 'do', 'db', 'bl', 'gn', 'dg', 'gr', 'lb', 'nt', 'or', 'pn', 'rd', 'vv', 'yw']
-            self.points_on_map.append(f'{self.map_ll[0]},{self.map_ll[1]},pm{random.choice(colors)}s')
+            if f'{self.map_ll[0]},{self.map_ll[1]}' not in ''.join(self.points_on_map):
+                colors = ['wt', 'do', 'db', 'bl', 'gn', 'dg', 'gr', 'lb', 'nt', 'or', 'pn', 'rd', 'vv', 'yw']
+                self.points_on_map.append(f'{self.map_ll[0]},{self.map_ll[1]},pm{random.choice(colors)}s')
+                self.index_points[object_name] = len(self.points_on_map) - 1
+            self.refresh_map()
+
+    def clear_point(self):
+        object_name = self.searchEdit.text()
+        if object_name:
+            try:
+                self.points_on_map.pop(self.index_points[object_name])
+            except Exception:
+                pass
             self.refresh_map()
 
 

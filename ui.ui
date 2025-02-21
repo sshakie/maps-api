@@ -228,7 +228,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>task5</string>
+    <string>task7</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -244,10 +244,23 @@
     </rect>
    </property>
    <property name="text">
-    <string>Поиск - Enter, Поле - Tab</string>
+    <string>Поиск - Enter, Выделить поле - Tab/Esc</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="clear_button">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>10</y>
+     <width>51</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Clear</string>
    </property>
   </widget>
  </widget>
