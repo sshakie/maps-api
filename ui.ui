@@ -152,6 +152,22 @@
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>530</y>
+     <width>601</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Приближение - колесо мыши, Управление - стрелки</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
