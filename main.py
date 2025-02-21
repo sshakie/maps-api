@@ -12,17 +12,30 @@ class MainWindow(QMainWindow):
         super().__init__(*args, **kwargs)
         uic.loadUi('ui.ui', self)
 
+        self.press_delta = 0.1
+
         self.map_zoom = 5
-        self.map_ll = [37.977751, 55.757718]
+        self.map_ll = [37.617531, 55.756086]
         self.map_l = 'map'
         self.map_key = ''
         self.refresh_map()
 
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key.Key_Up and self.map_zoom < 17:
+    def wheelEvent(self, event):
+        if event.angleDelta().y() > 0 and self.map_zoom < 17:
             self.map_zoom += 1
-        if event.key() == Qt.Key.Key_Down and self.map_zoom > 0:
+        elif event.angleDelta().y() < 0 and self.map_zoom > 0:
             self.map_zoom -= 1
+        self.refresh_map()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key.Key_Left:
+            self.map_ll[0] -= self.press_delta
+        if event.key() == Qt.Key.Key_Right:
+            self.map_ll[0] += self.press_delta
+        if event.key() == Qt.Key.Key_Up:
+            self.map_ll[1] += self.press_delta
+        if event.key() == Qt.Key.Key_Down:
+            self.map_ll[1] -= self.press_delta
         self.refresh_map()
 
     def closeEvent(self, event):
