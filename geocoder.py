@@ -40,7 +40,7 @@ def get_object_info(address):
     r, t = ramka['upperCorner'].split()
 
     span = f'{abs(float(l) - float(r)) / 2.0},{abs(float(t) - float(b)) / 2.0}'
-    return info, span
+    return info, span, a
 
 
 def get_nearest_object(point, kind):

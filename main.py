@@ -91,6 +91,7 @@ class MainWindow(QMainWindow):
             self.label_2.setStyleSheet('color:white')
             self.label_3.setStyleSheet('color:white')
             self.clear_button.setStyleSheet('color:white')
+            self.addressEdit.setStyleSheet('color:white')
         else:
             self.current_theme = 'light'
             self.theme_button.setText('Light')
@@ -102,13 +103,21 @@ class MainWindow(QMainWindow):
             self.label_2.setStyleSheet('color:black')
             self.label_3.setStyleSheet('color:black')
             self.clear_button.setStyleSheet('color:black')
+            self.addressEdit.setStyleSheet('color:black')
         self.refresh_map()
 
     def search_object(self):
         object_name = self.searchEdit.text()
         if object_name:
-            self.map_ll = list(map(float, get_object_info(object_name)[0].split(',')))
+            self.info = get_object_info(object_name)
+            self.map_ll = list(map(float, self.info[0].split(',')))
             self.map_zoom = 17
+
+            self.address = self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['Components']
+            a = [i['name'] for i in self.address]
+            self.address = ', '.join([a[0], a[-1], a[1], a[2], a[3]])
+            self.addressEdit.setPlainText(self.address)
+
             if f'{self.map_ll[0]},{self.map_ll[1]}' not in ''.join(self.points_on_map):
                 colors = ['wt', 'do', 'db', 'bl', 'gn', 'dg', 'gr', 'lb', 'nt', 'or', 'pn', 'rd', 'vv', 'yw']
                 self.points_on_map.append(f'{self.map_ll[0]},{self.map_ll[1]},pm{random.choice(colors)}s')
@@ -120,6 +129,8 @@ class MainWindow(QMainWindow):
         if object_name:
             try:
                 self.points_on_map.pop(self.index_points[object_name])
+                self.addressEdit.setPlainText('')
+                self.searchEdit.setText('')
             except Exception:
                 pass
             self.refresh_map()
