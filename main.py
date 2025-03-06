@@ -31,14 +31,6 @@ class MainWindow(QMainWindow):
         self.clear_button.clicked.connect(self.clear_point)
         self.clear_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
-    def wheelEvent(self, event):
-        if event.angleDelta().y() > 0 and self.map_zoom < 17:
-            self.map_zoom += 1
-        elif event.angleDelta().y() < 0 and self.map_zoom > 1:
-            self.map_zoom -= 1
-        self.refresh_map()
-        super().wheelEvent(event)
-
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Left:
             self.map_ll[0] -= self.press_delta
@@ -54,6 +46,10 @@ class MainWindow(QMainWindow):
             self.searchEdit.setFocus()
         if event.key() == Qt.Key.Key_Escape:
             self.searchEdit.clearFocus()
+        if event.key() == Qt.Key.Key_PageUp and self.map_zoom < 17:
+            self.map_zoom += 1
+        if event.key() == Qt.Key.Key_PageDown and self.map_zoom > 1:
+            self.map_zoom -= 1
         self.refresh_map()
         super().keyPressEvent(event)
 

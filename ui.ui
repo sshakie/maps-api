@@ -162,7 +162,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Приближение - колесо мыши, Управление - стрелки</string>
+    <string>Приближение - PageUp/PageDown, Управление - стрелки</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -212,7 +212,7 @@
     <set>Qt::AlignCenter</set>
    </property>
    <property name="placeholderText">
-    <string>type object</string>
+    <string>type object's name</string>
    </property>
    <property name="cursorMoveStyle">
     <enum>Qt::LogicalMoveStyle</enum>
