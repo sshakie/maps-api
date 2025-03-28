@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
     def change_theme(self):
         if self.current_theme == 'light':
             self.current_theme = 'dark'
-            self.theme_button.setText('Dark')
+            self.theme_button.setText('⬜')
             self.setStyleSheet("background-color: rgb(75, 75, 75)")
             self.theme_button.setStyleSheet('color:white')
             self.search_button.setStyleSheet('color:white')
@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
             self.addressEdit.setStyleSheet('color:white')
         else:
             self.current_theme = 'light'
-            self.theme_button.setText('Light')
+            self.theme_button.setText('⬛')
             self.setStyleSheet("background-color: rgb(255, 255, 255)")
             self.theme_button.setStyleSheet('color:black')
             self.search_button.setStyleSheet('color:black')
@@ -116,6 +116,14 @@ class MainWindow(QMainWindow):
             self.address = self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['Components']
             a = [i['name'] for i in self.address]
             self.address = ', '.join([a[0], a[-1], a[1], a[2], a[3]])
+            if self.show_postal.isChecked():
+                try:
+                    self.address += f', {self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['postal_code']}'
+                except Exception:
+                    print(
+                        '-----\n(Почтовый индекс у данного адреса не доступен, попробуйте вбить более общий адрес (если честно сам до сих пор не понимаю как это работает))')
+                    print(
+                        '(Пример, на котором работает: Музей Московского Уголовного Розыска (МУРа), Петровка, 38, Москва)\n-----')
             self.addressEdit.setPlainText(self.address)
 
             if f'{self.map_ll[0]},{self.map_ll[1]}' not in ''.join(self.points_on_map):

@@ -54,14 +54,14 @@
   <widget class="QPushButton" name="theme_button">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>180</x>
      <y>10</y>
-     <width>75</width>
+     <width>31</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Light</string>
+    <string>⬛</string>
    </property>
   </widget>
   <widget class="Line" name="line_2">
@@ -171,14 +171,14 @@
   <widget class="QPushButton" name="search_button">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>110</x>
      <y>10</y>
-     <width>51</width>
+     <width>31</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Search</string>
+    <string>🔍</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="searchEdit">
@@ -186,7 +186,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>113</width>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -212,7 +212,7 @@
     <set>Qt::AlignCenter</set>
    </property>
    <property name="placeholderText">
-    <string>type object's name</string>
+    <string>object's name</string>
    </property>
    <property name="cursorMoveStyle">
     <enum>Qt::LogicalMoveStyle</enum>
@@ -221,14 +221,14 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>13</y>
-     <width>47</width>
+     <x>560</x>
+     <y>10</y>
+     <width>31</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>task8</string>
+    <string>task9</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -253,14 +253,14 @@
   <widget class="QPushButton" name="clear_button">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>140</x>
      <y>10</y>
-     <width>51</width>
+     <width>31</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Clear</string>
+    <string>❌</string>
    </property>
   </widget>
   <widget class="QPlainTextEdit" name="addressEdit">
@@ -269,11 +269,16 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>340</x>
+     <x>260</x>
      <y>10</y>
-     <width>211</width>
+     <width>291</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>8</pointsize>
+    </font>
    </property>
    <property name="mouseTracking">
     <bool>false</bool>
@@ -292,6 +297,22 @@
    </property>
    <property name="textInteractionFlags">
     <set>Qt::NoTextInteraction</set>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="show_postal">
+   <property name="geometry">
+    <rect>
+     <x>217</x>
+     <y>18</y>
+     <width>41</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="text">
+    <string>📪</string>
    </property>
   </widget>
  </widget>
