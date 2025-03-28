@@ -58,6 +58,25 @@ class MainWindow(QMainWindow):
     def mousePressEvent(self, event):
         if not self.searchEdit.geometry().contains(event.pos()):
             self.searchEdit.clearFocus()
+        if event.button() == Qt.MouseButton.LeftButton and self.map_label.geometry().contains(event.pos()):
+            cursor_x = (event.pos().x() - self.map_label.geometry().left()) / self.map_label.geometry().width()
+            cursor_y = (event.pos().y() - self.map_label.geometry().top()) / self.map_label.geometry().height()
+            map_width = 360 / (2 ** (self.map_zoom - 1))
+            map_height = 180 / (2 ** (self.map_zoom - 1))
+            click_lon = self.map_ll[0] - (map_width / 2) + cursor_x * map_width
+            click_lat = self.map_ll[1] + (map_height / 2) - cursor_y * map_height
+
+            self.info = get_object_info(f'{click_lon},{click_lat}')
+            click_map_ll = list(map(float, self.info[0].split(',')))
+            click_address = self.info[2]['metaDataProperty']['GeocoderMetaData']['text']
+            self.show_postal_code(address=click_address)
+
+            if f'{click_map_ll[0]},{click_map_ll[1]}' not in ''.join(self.points_on_map):
+                colors = ['wt', 'do', 'db', 'bl', 'gn', 'dg', 'gr', 'lb', 'nt', 'or', 'pn', 'rd', 'vv', 'yw']
+                self.points_on_map.append(f'{click_map_ll[0]},{click_map_ll[1]},pm{random.choice(colors)}s')
+                self.index_points[click_address] = len(self.points_on_map) - 1
+            self.refresh_map()
+
         super().mousePressEvent(event)
 
     def closeEvent(self, event):
@@ -69,11 +88,11 @@ class MainWindow(QMainWindow):
         super().focusOutEvent(event)
 
     def refresh_map(self):
-        map_params = {'apikey': self.key, 'size': self.size_map, 'll': ','.join(map(str, self.map_ll)),
-                      'z': self.map_zoom, 'theme': self.current_theme}
+        map_params = {'l': 'map', 'll': f'{self.map_ll[0]:.6f},{self.map_ll[1]:.6f}', 'z': self.map_zoom,
+                      'size': self.size_map}
         if self.points_on_map:
             map_params['pt'] = '~'.join(self.points_on_map)
-        response = requests.get('https://static-maps.yandex.ru/v1', params=map_params)
+        response = requests.get('https://static-maps.yandex.ru/1.x/', params=map_params)
         with open('tmp.png', mode='wb') as tmp:
             tmp.write(response.content)
 
@@ -137,17 +156,21 @@ class MainWindow(QMainWindow):
                 pass
             self.refresh_map()
 
-    def show_postal_code(self):
-        if self.address:
+    def show_postal_code(self, address=''):
+        if address == '':
+            address = self.address
+
+        if address:
             if self.show_postal.isChecked():
                 try:
                     self.addressEdit.setPlainText(
-                        self.address + f', {self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['postal_code']}')
+                        address + f', {self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['postal_code']}')
                 except Exception:
-                    self.addressEdit.setPlainText(self.address)
-                    print('(у данного запроса нет почтового индекса, попробуйте ввести другой)')
+                    if type(address) == str:
+                        self.addressEdit.setPlainText(address)
+                        print('(у данного запроса нет почтового индекса, попробуйте ввести другой)')
             else:
-                self.addressEdit.setPlainText(self.address)
+                self.addressEdit.setPlainText(address)
 
 
 def exception_hook(cls, exception, traceback):
