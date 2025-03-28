@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
         self.map_ll = [37.617531, 55.756086]
         self.current_theme = 'light'
         self.points_on_map = []
+        self.address = ''
         self.index_points = dict()
         self.refresh_map()
 
@@ -30,6 +31,7 @@ class MainWindow(QMainWindow):
         self.searchEdit.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         self.clear_button.clicked.connect(self.clear_point)
         self.clear_button.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.show_postal.stateChanged.connect(self.show_postal_code)
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key.Key_Left:
@@ -116,15 +118,7 @@ class MainWindow(QMainWindow):
             self.address = self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['Components']
             a = [i['name'] for i in self.address]
             self.address = ', '.join([a[0], a[-1], a[1], a[2], a[3]])
-            if self.show_postal.isChecked():
-                try:
-                    self.address += f', {self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['postal_code']}'
-                except Exception:
-                    print(
-                        '-----\n(Почтовый индекс у данного адреса не доступен, попробуйте вбить более общий адрес (если честно сам до сих пор не понимаю как это работает))')
-                    print(
-                        '(Пример, на котором работает: Музей Московского Уголовного Розыска (МУРа), Петровка, 38, Москва)\n-----')
-            self.addressEdit.setPlainText(self.address)
+            self.show_postal_code()
 
             if f'{self.map_ll[0]},{self.map_ll[1]}' not in ''.join(self.points_on_map):
                 colors = ['wt', 'do', 'db', 'bl', 'gn', 'dg', 'gr', 'lb', 'nt', 'or', 'pn', 'rd', 'vv', 'yw']
@@ -142,6 +136,18 @@ class MainWindow(QMainWindow):
             except Exception:
                 pass
             self.refresh_map()
+
+    def show_postal_code(self):
+        if self.address:
+            if self.show_postal.isChecked():
+                try:
+                    self.addressEdit.setPlainText(
+                        self.address + f', {self.info[2]['metaDataProperty']['GeocoderMetaData']['Address']['postal_code']}')
+                except Exception:
+                    self.addressEdit.setPlainText(self.address)
+                    print('(у данного запроса нет почтового индекса, попробуйте ввести другой)')
+            else:
+                self.addressEdit.setPlainText(self.address)
 
 
 def exception_hook(cls, exception, traceback):
