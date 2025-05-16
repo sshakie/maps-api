@@ -1,10 +1,9 @@
-import sys, os, random
-from PyQt6 import uic
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPixmap
+from geocoder import get_object_info, find_nearest_organization
 from PyQt6.QtWidgets import QApplication, QMainWindow
-
-from geocoder import *
+import sys, os, random, requests
+from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import Qt
+from PyQt6 import uic
 
 
 class MainWindow(QMainWindow):
@@ -55,18 +54,22 @@ class MainWindow(QMainWindow):
         self.refresh_map()
         super().keyPressEvent(event)
 
+    def get_click_coordinates(self, event):
+        cursor_x = (event.pos().x() - self.map_label.geometry().left()) / self.map_label.geometry().width()
+        cursor_y = (event.pos().y() - self.map_label.geometry().top()) / self.map_label.geometry().height()
+        map_width = 360 / (2 ** (self.map_zoom - 1))
+        map_height = 180 / (2 ** (self.map_zoom - 1))
+        click_lon = self.map_ll[0] - (map_width / 2) + cursor_x * map_width
+        click_lat = self.map_ll[1] + (map_height / 2) - cursor_y * map_height
+        return [click_lon, click_lat]
+
     def mousePressEvent(self, event):
         if not self.searchEdit.geometry().contains(event.pos()):
             self.searchEdit.clearFocus()
-        if event.button() == Qt.MouseButton.LeftButton and self.map_label.geometry().contains(event.pos()):
-            cursor_x = (event.pos().x() - self.map_label.geometry().left()) / self.map_label.geometry().width()
-            cursor_y = (event.pos().y() - self.map_label.geometry().top()) / self.map_label.geometry().height()
-            map_width = 360 / (2 ** (self.map_zoom - 1))
-            map_height = 180 / (2 ** (self.map_zoom - 1))
-            click_lon = self.map_ll[0] - (map_width / 2) + cursor_x * map_width
-            click_lat = self.map_ll[1] + (map_height / 2) - cursor_y * map_height
 
-            self.info = get_object_info(f'{click_lon},{click_lat}')
+        if event.button() == Qt.MouseButton.LeftButton and self.map_label.geometry().contains(event.pos()):
+            coords = self.get_click_coordinates(event)
+            self.info = get_object_info(f'{coords[0]},{coords[1]}')
             click_map_ll = list(map(float, self.info[0].split(',')))
             click_address = self.info[2]['metaDataProperty']['GeocoderMetaData']['text']
             self.show_postal_code(address=click_address)
@@ -76,6 +79,20 @@ class MainWindow(QMainWindow):
                 self.points_on_map.append(f'{click_map_ll[0]},{click_map_ll[1]},pm{random.choice(colors)}s')
                 self.index_points[click_address] = len(self.points_on_map) - 1
             self.refresh_map()
+
+        elif event.button() == Qt.MouseButton.RightButton and self.map_label.geometry().contains(event.pos()):
+            coords = self.get_click_coordinates(event)
+            organization = find_nearest_organization(coords)
+            if organization:
+                self.address = organization[1]
+                self.show_postal_code()
+
+                if f'{self.map_ll[0]},{self.map_ll[1]}' not in ''.join(self.points_on_map):
+                    colors = ['wt', 'do', 'db', 'bl', 'gn', 'dg', 'gr', 'lb', 'nt', 'or', 'pn', 'rd', 'vv', 'yw']
+                    self.points_on_map.append(f'{self.map_ll[0]},{self.map_ll[1]},pm{random.choice(colors)}s')
+                    self.index_points[organization[1]] = len(self.points_on_map) - 1
+                self.refresh_map()
+
 
         super().mousePressEvent(event)
 

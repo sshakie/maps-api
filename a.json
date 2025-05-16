@@ -1,76 +1,153 @@
 {
-  'metaDataProperty': {
-    'GeocoderMetaData': {
-      'precision': 'other',
-      'text': 'Россия, Кировская область, Опаринский муниципальный округ',
-      'kind': 'area',
-      'Address': {
-        'country_code': 'RU',
-        'formatted': 'Россия, Кировская область, Опаринский муниципальный округ',
-        'Components': [
-          {
-            'kind': 'country',
-            'name': 'Россия'
-          },
-          {
-            'kind': 'province',
-            'name': 'Приволжский федеральный округ'
-          },
-          {
-            'kind': 'province',
-            'name': 'Кировская область'
-          },
-          {
-            'kind': 'area',
-            'name': 'Опаринский муниципальный округ'
-          }
+  'type': 'FeatureCollection',
+  'properties': {
+    'ResponseMetaData': {
+      'SearchResponse': {
+        'found': 21,
+        'display': 'multiple',
+        'boundedBy': [
+          [
+            35.67646894,
+            56.85864382
+          ],
+          [
+            35.75859306,
+            56.90351466
+          ]
         ]
       },
-      'AddressDetails': {
-        'Country': {
-          'AddressLine': 'Россия, Кировская область, Опаринский муниципальный округ',
-          'CountryNameCode': 'RU',
-          'CountryName': 'Россия',
-          'AdministrativeArea': {
-            'AdministrativeAreaName': 'Кировская область',
-            'SubAdministrativeArea': {
-              'SubAdministrativeAreaName': 'Опаринский муниципальный округ'
+      'SearchRequest': {
+        'request': 'Почта',
+        'skip': 0,
+        'results': 1,
+        'boundedBy': [
+          [
+            37.048427,
+            55.43644866
+          ],
+          [
+            38.175903,
+            56.04690174
+          ]
+        ]
+      }
+    }
+  },
+  'features': [
+    {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Point',
+        'coordinates': [
+          35.753029,
+          56.890203
+        ]
+      },
+      'properties': {
+        'name': 'Отделение почтовой связи № 170508',
+        'description': 'посёлок Заволжский, 2, Россия',
+        'boundedBy': [
+          [
+            35.748906,
+            56.888018
+          ],
+          [
+            35.757116,
+            56.892512
+          ]
+        ],
+        'uri': 'ymapsbm1://org?oid=1118535496',
+        'CompanyMetaData': {
+          'id': '1118535496',
+          'name': 'Отделение почтовой связи № 170508',
+          'address': 'Тверская область, Калининский муниципальный округ, посёлок Заволжский, 2',
+          'Address': {
+            'country_code': 'RU',
+            'formatted': 'Тверская область, Калининский муниципальный округ, посёлок Заволжский, 2',
+            'postal_code': '170508',
+            'additional_info': '',
+            'Components': [
+              {
+                'kind': 'country',
+                'name': 'Россия'
+              },
+              {
+                'kind': 'province',
+                'name': 'Центральный федеральный округ'
+              },
+              {
+                'kind': 'province',
+                'name': 'Тверская область'
+              },
+              {
+                'kind': 'area',
+                'name': 'Калининский муниципальный округ'
+              },
+              {
+                'kind': 'locality',
+                'name': 'посёлок Заволжский'
+              },
+              {
+                'kind': 'house',
+                'name': '2'
+              }
+            ]
+          },
+          'url': 'https://www.pochta.ru/',
+          'Phones': [
+            {
+              'type': 'phone',
+              'formatted': '8 (800) 100-00-00'
+            },
+            {
+              'type': 'phone',
+              'formatted': '8 (800) 200-58-88'
+            },
+            {
+              'type': 'phone',
+              'formatted': '+7 (4822) 37-93-40'
             }
+          ],
+          'Categories': [
+            {
+              'class': 'post office',
+              'name': 'Почтовое отделение'
+            }
+          ],
+          'Hours': {
+            'text': 'ср 09:00–14:00; пт 09:00–15:00; сб 09:00–14:00',
+            'Availabilities': [
+              {
+                'Intervals': [
+                  {
+                    'from': '09:00:00',
+                    'to': '14:00:00'
+                  }
+                ],
+                'Wednesday': True
+              },
+              {
+                'Intervals': [
+                  {
+                    'from': '09:00:00',
+                    'to': '15:00:00'
+                  }
+                ],
+                'Friday': True
+              },
+              {
+                'Intervals': [
+                  {
+                    'from': '09:00:00',
+                    'to': '14:00:00'
+                  }
+                ],
+                'Saturday': True
+              }
+            ]
           }
         }
       }
     }
-  },
-  'name': 'Опаринский муниципальный округ',
-  'description': 'Кировская область, Россия',
-  'boundedBy': {
-    'Envelope': {
-      'lowerCorner': '46.92093 59.288956',
-      'upperCorner': '48.53284 60.241432'
-    }
-  },
-  'uri': 'ymapsbm1://geo?data=IgoNwN5AQhVuuW9C',
-  'Point': {
-    'pos': '47.810765 59.716166'
-  }
-})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  ]
+}
